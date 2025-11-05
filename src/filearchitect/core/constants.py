@@ -67,11 +67,14 @@ class ProcessingStatus(Enum):
 class SessionStatus(Enum):
     """Enumeration of session statuses."""
 
+    PENDING = "pending"
+    IN_PROGRESS = "in_progress"
     RUNNING = "running"
     PAUSED = "paused"
     COMPLETED = "completed"
     STOPPED = "stopped"
     ERROR = "error"
+    UNDONE = "undone"
 
 
 class DateSource(Enum):

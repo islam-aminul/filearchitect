@@ -15,12 +15,13 @@ from threading import Thread, Event, Lock
 import logging
 import time
 
-from ..core.constants import ProcessingStatus
+from ..core.constants import ProcessingStatus, SessionStatus
 from ..core.exceptions import OrchestratorError
 from ..core.pipeline import ProcessingPipeline, PipelineResult
 from ..core.scanner import FileScanner
 from ..database.manager import DatabaseManager
 from ..core.deduplication import DeduplicationEngine
+from ..core.session import SessionManager, ProgressSnapshot
 
 logger = logging.getLogger(__name__)
 
@@ -93,7 +94,8 @@ class ProcessingOrchestrator:
         destination_path: Path,
         session_id: int,
         num_workers: Optional[int] = None,
-        progress_callback: Optional[Callable] = None
+        progress_callback: Optional[Callable] = None,
+        session_manager: Optional[SessionManager] = None
     ):
         """
         Initialize orchestrator.
@@ -105,6 +107,7 @@ class ProcessingOrchestrator:
             session_id: Session ID
             num_workers: Number of worker threads (default: CPU count)
             progress_callback: Optional callback for progress updates
+            session_manager: Optional session manager for persistence
         """
         self.config = config
         self.source_path = source_path
@@ -120,6 +123,7 @@ class ProcessingOrchestrator:
         self.db_manager = DatabaseManager.get_instance()
         self.dedup_engine = DeduplicationEngine(config, self.db_manager)
         self.scanner = FileScanner(config)
+        self.session_manager = session_manager or SessionManager(destination_path, self.db_manager)
 
         # Processing state
         self.state = OrchestratorState.IDLE
@@ -158,6 +162,9 @@ class ProcessingOrchestrator:
             self.progress.state = self.state
             self.progress.start_time = datetime.now()
 
+        # Update session status
+        self.session_manager.update_session_status(self.session_id, SessionStatus.IN_PROGRESS)
+
         try:
             # Phase 1: Scan files
             self._scan_files()
@@ -178,11 +185,21 @@ class ProcessingOrchestrator:
                     self.progress.state = self.state
                     logger.info("Processing completed successfully")
 
+                    # Update session status
+                    self.session_manager.update_session_status(self.session_id, SessionStatus.COMPLETED)
+
         except Exception as e:
             logger.error(f"Orchestrator error: {e}", exc_info=True)
             with self.state_lock:
                 self.state = OrchestratorState.ERROR
                 self.progress.state = self.state
+
+            # Update session status
+            self.session_manager.update_session_status(
+                self.session_id,
+                SessionStatus.ERROR,
+                str(e)
+            )
             raise
 
         finally:
@@ -199,6 +216,10 @@ class ProcessingOrchestrator:
             self.progress.state = self.state
 
         self.pause_event.clear()
+
+        # Update session status
+        self.session_manager.update_session_status(self.session_id, SessionStatus.PAUSED)
+
         self._update_progress()
 
     def resume(self):
@@ -212,6 +233,10 @@ class ProcessingOrchestrator:
             self.progress.state = self.state
 
         self.pause_event.set()
+
+        # Update session status
+        self.session_manager.update_session_status(self.session_id, SessionStatus.IN_PROGRESS)
+
         self._update_progress()
 
     def stop(self):
@@ -234,6 +259,9 @@ class ProcessingOrchestrator:
         with self.state_lock:
             self.state = OrchestratorState.STOPPED
             self.progress.state = self.state
+
+        # Update session status
+        self.session_manager.update_session_status(self.session_id, SessionStatus.STOPPED)
 
         logger.info("Orchestrator stopped")
         self._update_progress()
@@ -489,11 +517,24 @@ class ProcessingOrchestrator:
         # Final progress update
         self._update_progress()
 
+        # Clear progress file if completed successfully
+        if self.state == OrchestratorState.COMPLETED:
+            self.session_manager.clear_progress()
+
     def _update_progress(self):
-        """Invoke progress callback."""
+        """Invoke progress callback and save progress to disk."""
+        progress = self.get_progress()
+
+        # Save progress to disk
+        try:
+            snapshot = ProgressSnapshot.from_progress(progress)
+            self.session_manager.save_progress(snapshot)
+        except Exception as e:
+            logger.error(f"Failed to save progress: {e}")
+
+        # Invoke callback
         if self.progress_callback:
             try:
-                progress = self.get_progress()
                 self.progress_callback(progress)
             except Exception as e:
                 logger.error(f"Progress callback error: {e}")

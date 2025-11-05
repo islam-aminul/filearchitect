@@ -48,6 +48,11 @@ from filearchitect.core.space import (
     SpaceManager,
     SpaceInfo
 )
+from filearchitect.core.session import (
+    SessionManager,
+    SessionAction,
+    ProgressSnapshot
+)
 
 __all__ = [
     "FileArchitectError",
@@ -83,4 +88,7 @@ __all__ = [
     "ProcessingProgress",
     "SpaceManager",
     "SpaceInfo",
+    "SessionManager",
+    "SessionAction",
+    "ProgressSnapshot",
 ]
