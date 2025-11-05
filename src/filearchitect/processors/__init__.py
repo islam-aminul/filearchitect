@@ -11,6 +11,7 @@ from filearchitect.processors.image import ImageProcessor
 from filearchitect.processors.video import VideoProcessor
 from filearchitect.processors.audio import AudioProcessor
 from filearchitect.processors.document import DocumentProcessor
+from filearchitect.processors.export import ImageExporter
 
 __all__ = [
     "BaseProcessor",
@@ -20,4 +21,5 @@ __all__ = [
     "VideoProcessor",
     "AudioProcessor",
     "DocumentProcessor",
+    "ImageExporter",
 ]

@@ -22,6 +22,7 @@ from ..core.scanner import FileScanner
 from ..database.manager import DatabaseManager
 from ..core.deduplication import DeduplicationEngine
 from ..core.session import SessionManager, ProgressSnapshot
+from ..core.monitor import AutoPauseMonitor
 
 logger = logging.getLogger(__name__)
 
@@ -125,6 +126,14 @@ class ProcessingOrchestrator:
         self.scanner = FileScanner(config)
         self.session_manager = session_manager or SessionManager(destination_path, self.db_manager)
 
+        # Resource monitoring
+        self.resource_monitor = AutoPauseMonitor(
+            destination_path=destination_path,
+            pause_callback=self._auto_pause,
+            check_interval=5.0,
+            low_space_threshold_gb=5.0
+        )
+
         # Processing state
         self.state = OrchestratorState.IDLE
         self.state_lock = Lock()
@@ -164,6 +173,9 @@ class ProcessingOrchestrator:
 
         # Update session status
         self.session_manager.update_session_status(self.session_id, SessionStatus.IN_PROGRESS)
+
+        # Start resource monitoring
+        self.resource_monitor.start()
 
         try:
             # Phase 1: Scan files
@@ -497,9 +509,17 @@ class ProcessingOrchestrator:
         for worker in self.workers:
             worker.join(timeout=5.0)
 
+    def _auto_pause(self):
+        """Auto-pause processing due to low resources."""
+        logger.warning("Auto-pausing due to low disk space")
+        self.pause()
+
     def _cleanup(self):
         """Cleanup resources."""
         logger.info("Cleaning up resources")
+
+        # Stop resource monitoring
+        self.resource_monitor.stop()
 
         # Clear queues
         while not self.file_queue.empty():

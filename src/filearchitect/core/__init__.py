@@ -53,6 +53,11 @@ from filearchitect.core.session import (
     SessionAction,
     ProgressSnapshot
 )
+from filearchitect.core.monitor import (
+    ResourceMonitor,
+    AutoPauseMonitor,
+    ResourceMetrics
+)
 
 __all__ = [
     "FileArchitectError",
@@ -91,4 +96,7 @@ __all__ = [
     "SessionManager",
     "SessionAction",
     "ProgressSnapshot",
+    "ResourceMonitor",
+    "AutoPauseMonitor",
+    "ResourceMetrics",
 ]
