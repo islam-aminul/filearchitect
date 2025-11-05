@@ -169,6 +169,28 @@ class MainWindow(QMainWindow):
         layout = QHBoxLayout(widget)
         layout.setSpacing(10)
 
+        # Preview button
+        self.preview_btn = QPushButton("Preview")
+        self.preview_btn.setFixedHeight(40)
+        self.preview_btn.setToolTip("Preview what files would be organized")
+        self.preview_btn.setStyleSheet("""
+            QPushButton {
+                background-color: #2196F3;
+                color: white;
+                font-weight: bold;
+                border-radius: 5px;
+            }
+            QPushButton:hover {
+                background-color: #1976D2;
+            }
+            QPushButton:disabled {
+                background-color: #cccccc;
+                color: #666666;
+            }
+        """)
+        self.preview_btn.clicked.connect(self._on_preview_clicked)
+        layout.addWidget(self.preview_btn)
+
         # Start button
         self.start_btn = QPushButton("Start Processing")
         self.start_btn.setFixedHeight(40)
@@ -390,6 +412,7 @@ class MainWindow(QMainWindow):
         )
 
         # Enable/disable buttons based on state
+        self.preview_btn.setEnabled(paths_valid and not self.is_processing)
         self.start_btn.setEnabled(paths_valid and not self.is_processing)
         self.pause_btn.setEnabled(self.is_processing and not self.is_paused)
         self.stop_btn.setEnabled(self.is_processing)
@@ -602,13 +625,81 @@ class MainWindow(QMainWindow):
                 logger.info("Settings updated")
                 self.status_bar.showMessage("Settings saved", 3000)
 
+    def _on_preview_clicked(self):
+        """Handle preview button click."""
+        try:
+            from ..core.scanner import FileScanner
+            from ..core.detector import detect_file_type
+
+            self.status_bar.showMessage("Scanning files...")
+            self.preview_btn.setEnabled(False)
+            QApplication.processEvents()
+
+            # Scan source directory
+            scanner = FileScanner(
+                self.source_path,
+                skip_folders=self.config.skip.skip_folders,
+                skip_files=self.config.skip.skip_files
+            )
+
+            # Collect file statistics
+            file_types = {}
+            total_size = 0
+            total_files = 0
+
+            for result in scanner.scan():
+                total_files += 1
+                total_size += result.file_size
+                file_type = result.file_type.value
+                if file_type not in file_types:
+                    file_types[file_type] = {'count': 0, 'size': 0}
+                file_types[file_type]['count'] += 1
+                file_types[file_type]['size'] += result.file_size
+
+            # Show summary
+            message = f"**Preview Summary**\n\n"
+            message += f"Total files: {total_files:,}\n"
+            message += f"Total size: {total_size / (1024**3):.2f} GB\n\n"
+            message += "**By Type:**\n"
+
+            for ftype, stats in sorted(file_types.items()):
+                message += f"  • {ftype.capitalize()}: {stats['count']:,} files ({stats['size'] / (1024**2):.1f} MB)\n"
+
+            message += f"\n✓ These files would be organized to:\n{self.destination_path}"
+
+            QMessageBox.information(
+                self,
+                "Preview - File Organization",
+                message
+            )
+
+            self.status_bar.showMessage("Preview complete", 3000)
+
+        except Exception as e:
+            logger.error(f"Preview failed: {e}")
+            QMessageBox.critical(
+                self,
+                "Preview Error",
+                f"Failed to preview files:\n{str(e)}"
+            )
+        finally:
+            self.preview_btn.setEnabled(True)
+            self.status_bar.showMessage("Ready")
+
     def _on_view_log_clicked(self):
         """Handle view log menu action."""
-        QMessageBox.information(
-            self,
-            "View Log",
-            "Log viewer will be implemented."
-        )
+        from .log_viewer import LogViewerDialog
+
+        try:
+            dialog = LogViewerDialog(parent=self)
+            dialog.exec()
+        except Exception as e:
+            logger.error(f"Failed to open log viewer: {e}")
+            QMessageBox.critical(
+                self,
+                "Error",
+                f"Failed to open log viewer:\n{str(e)}"
+            )
 
     def _on_about_clicked(self):
         """Handle about menu action."""
