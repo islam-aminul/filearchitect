@@ -1,0 +1,45 @@
+# FileArchitect Dependencies
+# Python 3.11+ required
+
+# GUI Framework
+PyQt6>=6.5.0
+
+# CLI Framework
+click>=8.1.0
+
+# File Type Detection
+python-magic>=0.4.27
+python-magic-bin>=0.4.14; sys_platform == 'win32'  # Windows binary
+
+# Image Processing
+Pillow>=10.0.0
+piexif>=1.1.3
+exifread>=3.0.0
+rawpy>=0.18.0
+pillow-heif>=0.13.0
+pillow-avif-plugin>=1.3.0
+imagehash>=4.3.0
+
+# Video Processing
+pymediainfo>=6.0.0
+ffmpeg-python>=0.2.0
+
+# Audio Processing
+mutagen>=1.47.0
+pyacoustid>=1.3.0
+musicbrainzngs>=0.7.0
+
+# Configuration & Validation
+pydantic>=2.4.0
+
+# Logging
+structlog>=23.1.0
+
+# Utilities
+tqdm>=4.66.0
+keyring>=24.2.0
+
+# Note: External dependencies required:
+# - FFmpeg (for video processing)
+# - chromaprint/fpcalc (for audio fingerprinting)
+# - libmagic (for file type detection on Linux/macOS)
