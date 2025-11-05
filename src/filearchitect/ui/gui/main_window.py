@@ -28,6 +28,9 @@ from ...config.manager import (
 )
 from .progress_widget import ProgressWidget
 from .worker import ProcessingWorker
+from .settings_dialog import SettingsDialog
+from .summary_dialog import SummaryDialog
+from .undo_dialog import UndoDialog
 
 logger = logging.getLogger(__name__)
 
@@ -575,21 +578,29 @@ class MainWindow(QMainWindow):
             )
             return
 
-        # This will be implemented in a separate dialog
-        QMessageBox.information(
-            self,
-            "Undo Session",
-            "Undo functionality will be implemented in a separate dialog."
+        # Show undo dialog
+        dialog = UndoDialog(
+            self.destination_path,
+            self.db_manager,
+            parent=self
         )
+        dialog.exec()
 
     def _on_settings_clicked(self):
         """Handle settings button click."""
-        # Settings dialog will be implemented separately
-        QMessageBox.information(
-            self,
-            "Settings",
-            "Settings dialog will be implemented."
+        # Show settings dialog
+        dialog = SettingsDialog(
+            self.config,
+            str(self.destination_path) if self.destination_path else None,
+            parent=self
         )
+
+        if dialog.exec() == QDialog.DialogCode.Accepted:
+            # Settings were saved
+            if dialog.was_modified():
+                self.config = dialog.get_config()
+                logger.info("Settings updated")
+                self.status_bar.showMessage("Settings saved", 3000)
 
     def _on_view_log_clicked(self):
         """Handle view log menu action."""
@@ -653,11 +664,29 @@ class MainWindow(QMainWindow):
         self._update_ui_state()
         self.status_bar.showMessage("Completed")
 
-        QMessageBox.information(
-            self,
-            "Processing Complete",
-            "File organization completed successfully!"
-        )
+        # Get final progress from worker
+        if self.worker:
+            progress = self.worker.get_progress()
+            if progress:
+                # Show summary dialog
+                dialog = SummaryDialog(
+                    progress,
+                    self.session_manager,
+                    parent=self
+                )
+                dialog.exec()
+            else:
+                QMessageBox.information(
+                    self,
+                    "Processing Complete",
+                    "File organization completed successfully!"
+                )
+        else:
+            QMessageBox.information(
+                self,
+                "Processing Complete",
+                "File organization completed successfully!"
+            )
 
     def processing_error(self, error: str):
         """Called when processing encounters an error."""

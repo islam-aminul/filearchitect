@@ -22,7 +22,7 @@ This document provides an overview of the current implementation status of FileA
 - **Phase 10 (Document Processing):** ~100% Complete ✅
 - **Phase 11 (Processing Engine):** ~100% Complete ✅
 - **Phase 12 (Session Management):** ~100% Complete ✅
-- **Phase 13 (GUI Application):** ~60% Complete 🚧
+- **Phase 13 (GUI Application):** ~90% Complete ✅
 - **Phase 14 (CLI Application):** ~100% Complete ✅
 - **Phases 15-20:** Not Started ❌
 
@@ -668,9 +668,9 @@ Updated `src/filearchitect/core/orchestrator.py`:
 
 ---
 
-### ✅ Phase 13: GUI Application (~60% Complete) 🚧
+### ✅ Phase 13: GUI Application (~90% Complete) 🚧
 
-Fully functional PyQt6-based graphical user interface implemented in `src/filearchitect/ui/gui/`.
+Complete PyQt6-based graphical user interface implemented in `src/filearchitect/ui/gui/`.
 
 #### 13.1 Main Window ✅ COMPLETE
 Implemented in `src/filearchitect/ui/gui/main_window.py`:
@@ -743,25 +743,68 @@ Implemented in `src/filearchitect/ui/gui/app.py`:
 - [x] Path accessibility checks
 - [x] Recent paths loading
 
-#### 13.6 Dialogs ⚠️ PARTIAL
+#### 13.6 Settings Dialog ✅ COMPLETE
+Implemented in `src/filearchitect/ui/gui/settings_dialog.py`:
+- [x] Tabbed interface with 5 tabs
+- [x] Processing options (threads, checksums, preview, undo)
+- [x] Export settings (JPEG quality, resolution, downscale)
+- [x] Skip patterns (folders and files with add/remove)
+- [x] Audio services (MusicBrainz, AcoustID configuration)
+- [x] Advanced settings (movie threshold, min file size)
+- [x] Restore defaults functionality
+- [x] Configuration save to destination
+- [x] Input validation
+
+**File:** `src/filearchitect/ui/gui/settings_dialog.py` (500+ lines)
+
+#### 13.7 Summary Dialog ✅ COMPLETE
+Implemented in `src/filearchitect/ui/gui/summary_dialog.py`:
+- [x] Overall statistics display
+- [x] Files processed / Total files
+- [x] Processing time and average speed
+- [x] Data processed (GB)
+- [x] Category breakdown (Images, Videos, Audio, Documents)
+- [x] Error count and warnings
+- [x] Duplicates and skipped files
+- [x] Additional information with icons
+- [x] Shown automatically after completion
+
+**File:** `src/filearchitect/ui/gui/summary_dialog.py` (280+ lines)
+
+#### 13.8 Undo Dialog ✅ COMPLETE
+Implemented in `src/filearchitect/ui/gui/undo_dialog.py`:
+- [x] File preview (first 100 files)
+- [x] Statistics (files to delete, directories to remove)
+- [x] Dry-run preview before actual undo
+- [x] Background worker thread for undo operation
+- [x] Progress dialog during undo
+- [x] Confirmation dialogs (double confirmation)
+- [x] Results display after completion
+- [x] Error handling
+
+**File:** `src/filearchitect/ui/gui/undo_dialog.py` (230+ lines)
+
+#### 13.9 Basic Dialogs ✅ COMPLETE
 - [x] Resume session confirmation
 - [x] Stop confirmation
 - [x] Low space warning
 - [x] Invalid path warnings
 - [x] About dialog
 - [x] Error messages
-- [ ] Settings dialog (placeholder)
-- [ ] Undo dialog (placeholder)
-- [ ] Summary dialog (not implemented)
-- [ ] Log viewer (not implemented)
-- [ ] Preview/dry-run mode (not implemented)
+- [x] Processing completion notification
 
-#### 13.7 Entry Point Registration ✅ COMPLETE
+#### 13.10 Entry Point Registration ✅ COMPLETE
 - [x] `filearchitect-gui` command registered in pyproject.toml
 - [x] Entry point: `filearchitect.ui.gui.app:run_gui`
 - [x] GUI application can be launched via command
 
-**Completion:** ~50/80 tasks (~60%)
+#### 13.11 Remaining Features ❌ NOT IMPLEMENTED
+- [ ] Log viewer window
+- [ ] Preview/dry-run mode interface (planned but not implemented)
+- [ ] Settings profiles management
+- [ ] Report viewer (HTML reports)
+
+**Completion:** ~70/80 tasks (~90%)
 
 ---
 
@@ -929,14 +972,17 @@ Directory exists but empty: `tests/integration/`
 
 #### User Interfaces - GUI
 31. `src/filearchitect/ui/gui/app.py` - 70 lines ✅
-32. `src/filearchitect/ui/gui/main_window.py` - 630 lines ✅
+32. `src/filearchitect/ui/gui/main_window.py` - 700 lines ✅
 33. `src/filearchitect/ui/gui/progress_widget.py` - 300 lines ✅
 34. `src/filearchitect/ui/gui/worker.py` - 140 lines ✅
+35. `src/filearchitect/ui/gui/settings_dialog.py` - 500 lines ✅
+36. `src/filearchitect/ui/gui/summary_dialog.py` - 280 lines ✅
+37. `src/filearchitect/ui/gui/undo_dialog.py` - 230 lines ✅
 
 #### Tests
-35. `tests/unit/test_utils.py` - 66 lines ✅
+38. `tests/unit/test_utils.py` - 66 lines ✅
 
-**Total:** 35 implementation files, ~9,636 lines of code
+**Total:** 38 implementation files, ~10,646 lines of code
 
 ### Empty/Placeholder Files
 - Multiple `__init__.py` files (structure only)
@@ -1018,12 +1064,16 @@ Directory exists but empty: `tests/integration/`
 49. **GUI Background Worker** - QThread-based processing with signal/slot communication
 50. **GUI Controls** - Start, pause, resume, stop with confirmation dialogs
 51. **GUI Entry Point** - `filearchitect-gui` command for easy launch
+52. **GUI Settings Dialog** - Complete configuration editor with 5 tabs
+53. **GUI Summary Dialog** - Processing results display with statistics
+54. **GUI Undo Dialog** - File preview and confirmation for undo operations
+55. **Configuration Management** - Save/load settings from destination directory
 
 ### Not Yet Functional (Core Features) ❌
 - Audio fingerprinting and enhancement
-- GUI settings dialog
 - GUI log viewer
 - GUI preview/dry-run mode
+- Settings profiles management
 
 ---
 
@@ -1044,16 +1094,14 @@ Based on the implementation plan (P0 - Critical for MVP), the next steps should 
 10. ~~Implement Phase 11 (Processing Orchestration)~~ ✅
 11. ~~Implement Phase 12 (Session Management)~~ ✅
 12. ~~Implement Phase 14 (CLI Application)~~ ✅
-13. ~~Implement Phase 13 (GUI Application - Core)~~ 60% ✅
+13. ~~Implement Phase 13 (GUI Application - Core)~~ 90% ✅
 
 ### Immediate Next Steps (Priority Order)
 
-1. **Complete Phase 13** (GUI Application - 40% remaining)
-   - Settings dialog with all configuration options
-   - Summary dialog after processing completion
+1. **Complete Phase 13** (GUI Application - 10% remaining)
    - Log viewer window
    - Preview/dry-run mode interface
-   - Enhanced dialogs (undo confirmation with preview)
+   - Settings profiles management
 
 2. **Implement Testing Suite** (Phase 17)
    - Unit tests for all modules
@@ -1073,7 +1121,7 @@ Based on the implementation plan (P0 - Critical for MVP), the next steps should 
 
 ## Estimated Completion
 
-### Work Completed: ~75-80%
+### Work Completed: ~80-85%
 - Infrastructure: 95% ✅
 - Core utilities: 100% ✅
 - Database layer: 100% ✅
@@ -1085,19 +1133,19 @@ Based on the implementation plan (P0 - Critical for MVP), the next steps should 
 - Processing orchestration: 100% ✅
 - Session management: 100% ✅
 - CLI application: 100% ✅
-- GUI application: 60% 🚧
-- Overall: ~75-80% of total functionality
+- GUI application: 90% ✅
+- Overall: ~80-85% of total functionality
 
 ### Remaining Work
-- Core functionality: ~20-25%
-- Estimated remaining: 2-4 weeks (based on original 17-week estimate)
+- Core functionality: ~15-20%
+- Estimated remaining: 1-3 weeks (based on original 17-week estimate)
 
 ### MVP (P0) Tasks Remaining
-- ~80-120 tasks from the original ~1000+ tasks
-- Primary focus: Complete GUI features, testing, documentation
+- ~50-80 tasks from the original ~1000+ tasks
+- Primary focus: Testing, documentation, and minor GUI enhancements
 
 ### Core Phases Complete
-Phases 1-12, 13 (60%), and 14 are complete:
+Phases 1-12, 13 (90%), and 14 are complete:
 - Complete foundation (utilities, database, config, logging)
 - File detection and scanning system
 - Deduplication with hash-based detection
@@ -1112,9 +1160,9 @@ Phases 1-12, 13 (60%), and 14 are complete:
 - Session management with persistence and resume
 - Undo/rollback functionality
 - Full-featured CLI application with 5 commands
-- Functional GUI application with main window, progress display, and controls
+- Complete GUI application with settings, summary, and undo dialogs
 
-The next priority is completing the remaining GUI features (settings, log viewer, summary dialogs).
+The next priority is testing, documentation, and minor enhancements (log viewer, preview mode).
 
 ---
 
@@ -1150,9 +1198,9 @@ The next priority is completing the remaining GUI features (settings, log viewer
 - Processing orchestration 100% complete (pipeline, orchestrator, space management, resource monitoring)
 - Session management complete with persistence and undo
 - CLI application complete with all core commands
-- GUI application 60% complete (main window, progress display, controls)
-- Foundation provides ~9,636 lines of production code
-- Need to implement ~20-25% of core functionality (complete GUI features, testing, and documentation)
+- GUI application 90% complete (main window, progress, settings, summary, undo)
+- Foundation provides ~10,646 lines of production code
+- Need to implement ~15-20% of core functionality (testing, documentation, and minor enhancements)
 
 ---
 
