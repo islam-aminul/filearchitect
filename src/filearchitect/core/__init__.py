@@ -34,6 +34,20 @@ from filearchitect.core.deduplication import (
     detect_duplicates,
     calculate_space_saved
 )
+from filearchitect.core.pipeline import (
+    ProcessingPipeline,
+    PipelineStage,
+    PipelineResult
+)
+from filearchitect.core.orchestrator import (
+    ProcessingOrchestrator,
+    OrchestratorState,
+    ProcessingProgress
+)
+from filearchitect.core.space import (
+    SpaceManager,
+    SpaceInfo
+)
 
 __all__ = [
     "FileArchitectError",
@@ -61,4 +75,12 @@ __all__ = [
     "DeduplicationEngine",
     "detect_duplicates",
     "calculate_space_saved",
+    "ProcessingPipeline",
+    "PipelineStage",
+    "PipelineResult",
+    "ProcessingOrchestrator",
+    "OrchestratorState",
+    "ProcessingProgress",
+    "SpaceManager",
+    "SpaceInfo",
 ]

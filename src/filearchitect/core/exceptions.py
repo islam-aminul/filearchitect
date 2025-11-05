@@ -36,6 +36,12 @@ class DiskSpaceError(FileArchitectError):
     pass
 
 
+class InsufficientSpaceError(DiskSpaceError):
+    """Raised when there is insufficient disk space for operation."""
+
+    pass
+
+
 class DatabaseError(FileArchitectError):
     """Raised when database operations fail."""
 
@@ -62,5 +68,17 @@ class ValidationError(FileArchitectError):
 
 class NetworkError(FileArchitectError):
     """Raised when network operations fail (e.g., metadata lookup)."""
+
+    pass
+
+
+class PipelineError(FileArchitectError):
+    """Raised when processing pipeline encounters an error."""
+
+    pass
+
+
+class OrchestratorError(FileArchitectError):
+    """Raised when orchestrator encounters an error."""
 
     pass
