@@ -49,6 +49,21 @@ class DatabaseManager:
             self._db_path = db_path
             self._close_connection()
 
+    @classmethod
+    def get_instance(cls, db_path: Optional[Path] = None) -> 'DatabaseManager':
+        """
+        Get the singleton instance of DatabaseManager.
+
+        Args:
+            db_path: Optional path to database file
+
+        Returns:
+            DatabaseManager instance
+        """
+        if cls._instance is None or (db_path and cls._db_path != db_path):
+            cls._instance = cls(db_path)
+        return cls._instance
+
     def _get_connection(self) -> sqlite3.Connection:
         """
         Get database connection, creating if necessary.

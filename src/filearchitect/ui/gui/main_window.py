@@ -384,7 +384,7 @@ class MainWindow(QMainWindow):
 
     def _update_ui_state(self):
         """Update UI element states based on current state."""
-        paths_valid = (
+        paths_valid = bool(
             self.source_path and self.source_path.exists() and
             self.destination_path and self.destination_path.exists()
         )

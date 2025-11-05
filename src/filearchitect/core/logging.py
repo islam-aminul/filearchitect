@@ -24,12 +24,16 @@ def setup_logging(
 
     Args:
         log_file: Path to log file. If None, only console logging is enabled
-        level: Log level (DEBUG, INFO, WARNING, ERROR, CRITICAL)
+        level: Log level (DEBUG, INFO, WARNING, ERROR, CRITICAL) or int constant
         verbose: If True, set level to DEBUG and add more context
         json_output: If True, output logs as JSON (useful for machine parsing)
     """
     if verbose:
         level = "DEBUG"
+
+    # Handle both string and int level values
+    if isinstance(level, int):
+        level = logging.getLevelName(level)
 
     # Configure structlog processors
     processors = [

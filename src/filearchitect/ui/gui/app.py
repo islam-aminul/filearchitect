@@ -46,8 +46,9 @@ def run_gui():
 
     try:
         # Initialize database
-        db_manager = DatabaseManager.get_instance()
-        logger.info("Database initialized")
+        db_path = Path.home() / '.filearchitect' / 'filearchitect.db'
+        db_manager = DatabaseManager.get_instance(db_path)
+        logger.info(f"Database initialized at {db_path}")
 
         # Create and show main window
         window = MainWindow()
