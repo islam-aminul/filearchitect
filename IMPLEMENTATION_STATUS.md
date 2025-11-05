@@ -24,7 +24,9 @@ This document provides an overview of the current implementation status of FileA
 - **Phase 12 (Session Management):** ~100% Complete ✅
 - **Phase 13 (GUI Application):** ~90% Complete ✅
 - **Phase 14 (CLI Application):** ~100% Complete ✅
-- **Phases 15-20:** Not Started ❌
+- **Phase 15-16:** Not Started ❌
+- **Phase 17 (Testing Suite):** ~40% Complete ⚠️
+- **Phases 18-20:** Not Started ❌
 
 ---
 
@@ -883,40 +885,70 @@ Implemented in `src/filearchitect/ui/cli/display.py`:
 
 ---
 
-### ❌ Phase 15-20: Not Started
+### ⚠️ Phase 15-16: Not Started
 
 No implementation for:
-- Smart Features
-- Reporting & Analytics
-- Testing & Quality Assurance (only basic test structure)
-- Documentation & Packaging
-- Performance Optimization
-- Release Preparation
+- Smart Features (Phase 15)
+- Reporting & Analytics (Phase 16)
 
----
+### ✅ Phase 17: Testing Suite (40% Complete)
 
-## Testing Status
-
-### Unit Tests ⚠️ PARTIAL
-Location: `tests/unit/test_utils.py`
+#### 17.1 Unit Tests ✅ COMPLETE
+Location: `tests/unit/`
 
 Implemented:
-- [x] Basic test structure with pytest
-- [x] Tests for path utilities (`sanitize_filename`, `resolve_conflict`)
-- [x] Tests for hash utilities (`calculate_file_hash`)
-- [ ] Tests for logging
-- [ ] Tests for exceptions
-- [ ] Tests for configuration models
-- [ ] Most other unit tests not implemented
+- [x] pytest configuration with coverage (pytest.ini)
+- [x] Shared test fixtures (conftest.py)
+- [x] Tests for core utilities (test_utils.py) - 12 tests ✅
+- [x] Tests for database layer (test_database.py) - 15 tests ✅
+- [x] Tests for core components (test_core.py) - 11 tests ✅
+- [x] Path utilities (sanitize, conflict resolution)
+- [x] Hash utilities (calculate, cache, verify)
+- [x] Filesystem utilities (copy, delete, directory size)
+- [x] Datetime utilities (parse filename dates, format)
+- [x] Database manager (initialization, singleton, transactions)
+- [x] Session management (create, update, progress tracking)
+- [x] File records (insert, duplicate detection, query)
+- [x] File scanner (directory scanning, skip patterns, nested dirs)
+- [x] File detector (type detection, classification)
+- [x] Sidecar files (identification, finding)
+- [x] Deduplication (duplicate detection, hash caching)
 
-**File:** `tests/unit/test_utils.py` (66 lines)
+**Files:**
+- `tests/conftest.py` - 118 lines ✅
+- `tests/unit/test_utils.py` - 130 lines ✅
+- `tests/unit/test_database.py` - 308 lines ✅
+- `tests/unit/test_core.py` - 163 lines ✅
+- `pytest.ini` - 19 lines ✅
 
-### Integration Tests ❌ NOT IMPLEMENTED
+**Total:** 38 unit tests, all passing ✅
+
+#### 17.2 Bugs Fixed During Testing ✅
+- Fixed FileScanner symlink handling (Path.is_dir doesn't accept follow_symlinks parameter)
+- Fixed DeduplicationEngine hash calculation (incorrect parameter passing to calculate_file_hash)
+
+#### 17.3 Integration Tests ❌ NOT IMPLEMENTED
 Directory exists but empty: `tests/integration/`
 
+#### 17.4 GUI Tests ❌ NOT IMPLEMENTED
+No pytest-qt tests implemented yet
+
+#### 17.5 End-to-End Tests ❌ NOT IMPLEMENTED
+No E2E test scenarios implemented yet
+
 ### Test Coverage
-- Estimated current coverage: <10%
+- Current coverage: 22% (measured with pytest-cov)
+- Core utilities coverage: 25-74%
+- Database layer coverage: 45-76%
+- Scanner coverage: 61%
 - Target coverage: >80%
+
+### ❌ Phase 18-20: Not Started
+
+No implementation for:
+- Documentation & Packaging (Phase 18)
+- Performance Optimization (Phase 19)
+- Release Preparation (Phase 20)
 
 ---
 
@@ -980,9 +1012,13 @@ Directory exists but empty: `tests/integration/`
 37. `src/filearchitect/ui/gui/undo_dialog.py` - 230 lines ✅
 
 #### Tests
-38. `tests/unit/test_utils.py` - 66 lines ✅
+38. `tests/conftest.py` - 118 lines ✅
+39. `tests/unit/test_utils.py` - 130 lines ✅
+40. `tests/unit/test_database.py` - 308 lines ✅
+41. `tests/unit/test_core.py` - 163 lines ✅
+42. `pytest.ini` - 19 lines ✅
 
-**Total:** 38 implementation files, ~10,646 lines of code
+**Total:** 42 implementation files, ~11,364 lines of code (including 38 passing unit tests)
 
 ### Empty/Placeholder Files
 - Multiple `__init__.py` files (structure only)
@@ -1068,12 +1104,19 @@ Directory exists but empty: `tests/integration/`
 53. **GUI Summary Dialog** - Processing results display with statistics
 54. **GUI Undo Dialog** - File preview and confirmation for undo operations
 55. **Configuration Management** - Save/load settings from destination directory
+56. **Unit Test Suite** - 38 tests covering core utilities, database, and core components
+57. **Test Fixtures** - Reusable test fixtures for temp dirs, databases, sample files
+58. **Test Coverage** - pytest-cov integration with 22% coverage (target 80%)
+59. **Bug Fixes** - Scanner symlink handling and deduplication hash calculation fixed
 
 ### Not Yet Functional (Core Features) ❌
 - Audio fingerprinting and enhancement
 - GUI log viewer
 - GUI preview/dry-run mode
 - Settings profiles management
+- Integration tests
+- GUI tests (pytest-qt)
+- End-to-end tests
 
 ---
 
@@ -1103,12 +1146,16 @@ Based on the implementation plan (P0 - Critical for MVP), the next steps should 
    - Preview/dry-run mode interface
    - Settings profiles management
 
-2. **Implement Testing Suite** (Phase 17)
-   - Unit tests for all modules
-   - Integration tests for workflows
-   - GUI testing with pytest-qt
-   - End-to-end testing
-   - Test coverage > 80%
+2. **Expand Testing Suite** (Phase 17 - 60% remaining)
+   - ✅ Unit tests for core utilities (complete)
+   - ✅ Unit tests for database layer (complete)
+   - ✅ Unit tests for core components (complete)
+   - ❌ Unit tests for processors (not started)
+   - ❌ Unit tests for GUI components (not started)
+   - ❌ Integration tests for workflows (not started)
+   - ❌ GUI testing with pytest-qt (not started)
+   - ❌ End-to-end testing (not started)
+   - Test coverage: 22% → target 80%
 
 3. **Complete Documentation** (Phase 18)
    - API documentation with Sphinx

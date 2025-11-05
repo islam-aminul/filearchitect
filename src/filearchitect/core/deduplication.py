@@ -90,7 +90,7 @@ class DeduplicationEngine:
 
         # Calculate hash
         try:
-            file_hash = calculate_file_hash(file_path, progress_callback)
+            file_hash = calculate_file_hash(file_path, progress_callback=progress_callback)
 
             # Cache in database
             try:

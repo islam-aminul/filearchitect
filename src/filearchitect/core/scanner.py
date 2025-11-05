@@ -177,14 +177,18 @@ class FileScanner:
             try:
                 for entry in current_dir.iterdir():
                     try:
+                        # Skip symlinks if not following them
+                        if entry.is_symlink() and not self.follow_symlinks:
+                            continue
+
                         # Handle directories
-                        if entry.is_dir(follow_symlinks=self.follow_symlinks):
+                        if entry.is_dir():
                             if not self.should_skip_folder(entry):
                                 dirs_to_scan.append(entry)
                             continue
 
                         # Handle files
-                        if not entry.is_file(follow_symlinks=self.follow_symlinks):
+                        if not entry.is_file():
                             continue
 
                         if self.should_skip_file(entry):
