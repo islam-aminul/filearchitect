@@ -285,6 +285,11 @@ class MainWindow(QMainWindow):
         settings_action.triggered.connect(self._on_settings_clicked)
         edit_menu.addAction(settings_action)
 
+        profiles_action = QAction("&Profiles...", self)
+        profiles_action.setShortcut("Ctrl+P")
+        profiles_action.triggered.connect(self._on_profiles_clicked)
+        edit_menu.addAction(profiles_action)
+
         # Session menu
         session_menu = menubar.addMenu("&Session")
 
@@ -624,6 +629,32 @@ class MainWindow(QMainWindow):
                 self.config = dialog.get_config()
                 logger.info("Settings updated")
                 self.status_bar.showMessage("Settings saved", 3000)
+
+    def _on_profiles_clicked(self):
+        """Handle profiles menu action."""
+        from .profiles_dialog import ProfilesDialog
+
+        try:
+            dialog = ProfilesDialog(
+                current_config=self.config,
+                parent=self
+            )
+
+            if dialog.exec() == QDialog.DialogCode.Accepted:
+                # Check if a profile was loaded
+                loaded_config = dialog.get_loaded_config()
+                if loaded_config:
+                    self.config = loaded_config
+                    logger.info("Profile loaded and applied")
+                    self.status_bar.showMessage("Profile loaded successfully", 3000)
+
+        except Exception as e:
+            logger.error(f"Failed to open profiles dialog: {e}")
+            QMessageBox.critical(
+                self,
+                "Error",
+                f"Failed to open profiles dialog:\n{str(e)}"
+            )
 
     def _on_preview_clicked(self):
         """Handle preview button click."""

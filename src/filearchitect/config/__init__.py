@@ -26,6 +26,11 @@ from filearchitect.config.manager import (
     add_recent_path,
     get_default_config
 )
+from filearchitect.config.profiles import (
+    ProfileManager,
+    get_default_profiles,
+    create_default_profiles
+)
 
 __all__ = [
     "Config",
@@ -45,4 +50,7 @@ __all__ = [
     "save_recent_paths",
     "add_recent_path",
     "get_default_config",
+    "ProfileManager",
+    "get_default_profiles",
+    "create_default_profiles",
 ]
