@@ -68,7 +68,7 @@ dev = [
 
 [project.scripts]
 filearchitect = "filearchitect.ui.cli.main:cli"
-filearchitect-gui = "filearchitect.ui.gui.main:main"
+filearchitect-gui = "filearchitect.ui.gui.app:run_gui"
 
 [project.urls]
 Homepage = "https://github.com/filearchitect/filearchitect"
