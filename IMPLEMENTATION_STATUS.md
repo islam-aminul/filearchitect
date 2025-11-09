@@ -909,6 +909,11 @@ Implemented:
   - Document processor tests (5 tests)
   - Metadata extractor tests (5 tests)
   - Image exporter tests (4 tests)
+- [x] Expanded tests for utilities (test_utils.py) - 33 tests ✅
+  - Path utilities (10 tests)
+  - Hash utilities (4 tests)
+  - Filesystem utilities (15 tests)
+  - Datetime utilities (11 tests)
 - [x] Path utilities (sanitize, conflict resolution)
 - [x] Hash utilities (calculate, cache, verify)
 - [x] Filesystem utilities (copy, delete, directory size)
@@ -923,18 +928,17 @@ Implemented:
 
 **Files:**
 - `tests/conftest.py` - 118 lines ✅
-- `tests/unit/test_utils.py` - 130 lines ✅
+- `tests/unit/test_utils.py` - 381 lines ✅ (expanded with 21 new tests)
 - `tests/unit/test_database.py` - 308 lines ✅
 - `tests/unit/test_core.py` - 163 lines ✅
+- `tests/unit/test_processors.py` - 447 lines ✅ (30 new tests)
 - `pytest.ini` - 19 lines ✅
 
-**Total:** 68 unit tests, all passing ✅
+**Total:** 89 unit tests, all passing ✅
 
 #### 17.2 Bugs Fixed During Testing ✅
 - Fixed FileScanner symlink handling (Path.is_dir doesn't accept follow_symlinks parameter)
 - Fixed DeduplicationEngine hash calculation (incorrect parameter passing to calculate_file_hash)
-
-**Total:** 68 unit tests, all passing ✅
 
 #### 17.3 Integration Tests ⚠️ IN PROGRESS
 Location: `tests/integration/`
@@ -953,8 +957,12 @@ No pytest-qt tests implemented yet
 No E2E test scenarios implemented yet
 
 ### Test Coverage
-- **Current coverage: 27%** (measured with pytest-cov) - up from 22%
-- Core utilities coverage: 25-74%
+- **Current coverage: 29%** (measured with pytest-cov) - up from 22% → 27% → 29%
+- **Utility coverage (major improvements):**
+  - hash.py: 15% → **85%** (+70%)
+  - path.py: 11% → **73%** (+62%)
+  - filesystem.py: 8% → **56%** (+48%)
+  - datetime.py: 48% → **60%** (+12%)
 - Database layer coverage: 38-74%
 - Scanner coverage: 25%
 - **Processor coverage:** image: 47%, video: 34%, audio: 37%, document: 43%, metadata: 73%, export: 41%
@@ -1035,14 +1043,14 @@ No implementation for:
 
 #### Tests
 41. `tests/conftest.py` - 118 lines ✅
-42. `tests/unit/test_utils.py` - 130 lines ✅
+42. `tests/unit/test_utils.py` - 381 lines ✅
 43. `tests/unit/test_database.py` - 308 lines ✅
 44. `tests/unit/test_core.py` - 163 lines ✅
 45. `tests/unit/test_processors.py` - 447 lines ✅
 46. `tests/integration/test_workflows.py` - 380 lines ✅
 47. `pytest.ini` - 19 lines ✅
 
-**Total:** 47 implementation files, ~14,000+ lines of code (including 68 passing unit tests)
+**Total:** 47 implementation files, ~14,250+ lines of code (including 89 passing unit tests)
 
 ### Empty/Placeholder Files
 - Multiple `__init__.py` files (structure only)
@@ -1132,11 +1140,11 @@ No implementation for:
 57. **GUI Settings Profiles** - Save and load configuration profiles
 58. **Configuration Profiles** - Profile manager for saving/loading named configurations
 59. **Configuration Management** - Save/load settings from destination directory
-60. **Unit Test Suite** - 68 tests covering utilities, database, core components, and processors
+60. **Unit Test Suite** - 89 tests covering utilities, database, core components, and processors
 61. **Test Fixtures** - Reusable test fixtures for temp dirs, databases, sample files
 62. **Processor Tests** - Comprehensive tests for image, video, audio, document processors
 63. **Integration Tests** - Initial integration tests for complete workflows
-64. **Test Coverage** - pytest-cov integration with 27% coverage (target 80%, up from 22%)
+64. **Test Coverage** - pytest-cov integration with 29% coverage (target 80%, up from 22% → 27% → 29%)
 65. **Bug Fixes** - Scanner symlink handling and deduplication hash calculation fixed
 
 ### Not Yet Functional (Core Features) ❌
