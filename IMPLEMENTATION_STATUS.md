@@ -900,7 +900,16 @@ Implemented:
 - [x] pytest configuration with coverage (pytest.ini)
 - [x] Shared test fixtures (conftest.py)
 - [x] Tests for core utilities (test_utils.py) - 12 tests ✅
-- [x] Tests for database layer (test_database.py) - 15 tests ✅
+- [x] Tests for database layer (test_database.py) - 30 tests ✅
+  - Database manager tests (4 tests - initialization, singleton, transactions)
+  - Session management tests (4 tests - create, update, progress, incomplete)
+  - File record tests (3 tests - insert, duplicate check, query)
+  - Database schema tests (2 tests - integrity, version)
+  - Cache method tests (4 tests - hash caching, invalidation, updates)
+  - Session operation tests (4 tests - listing, retrieval, statistics, timing)
+  - File operation tests (3 tests - multi-file insert, type queries, duplicates)
+  - Error handling tests (3 tests - nonexistent sessions, invalid IDs, transactions)
+  - Maintenance tests (3 tests - incomplete session queries, size, vacuum)
 - [x] Tests for core components (test_core.py) - 11 tests ✅
 - [x] Tests for file processors (test_processors.py) - 30 tests ✅
   - Image processor tests (9 tests)
@@ -934,12 +943,12 @@ Implemented:
 **Files:**
 - `tests/conftest.py` - 118 lines ✅
 - `tests/unit/test_utils.py` - 381 lines ✅ (expanded with 21 new tests)
-- `tests/unit/test_database.py` - 308 lines ✅
+- `tests/unit/test_database.py` - 597 lines ✅ (expanded with 15 new tests)
 - `tests/unit/test_core.py` - 163 lines ✅
 - `tests/unit/test_processors.py` - 447 lines ✅ (30 new tests)
 - `pytest.ini` - 19 lines ✅
 
-**Total:** 112 unit tests, all passing ✅
+**Total:** 127 unit tests, all passing ✅
 
 #### 17.2 Bugs Fixed During Testing ✅
 - Fixed FileScanner symlink handling (Path.is_dir doesn't accept follow_symlinks parameter)
@@ -973,7 +982,9 @@ No E2E test scenarios implemented yet
   - detector.py: 15% → **46%** (+31%)
   - sidecar.py: 8% → **49%** (+41%)
   - deduplication.py: 17% → **35%** (+18%)
-- Database layer coverage: 38-74%
+- **Database layer coverage (major improvement):**
+  - database/manager.py: 41% → **76%** (+35%)
+  - database/schema.py: 29% → **45%** (+16%)
 - **Processor coverage:** image: 47%, video: 34%, audio: 37%, document: 43%, metadata: 73%, export: 41%
 - Target coverage: >80% (ongoing work)
 
@@ -1149,7 +1160,7 @@ No implementation for:
 57. **GUI Settings Profiles** - Save and load configuration profiles
 58. **Configuration Profiles** - Profile manager for saving/loading named configurations
 59. **Configuration Management** - Save/load settings from destination directory
-60. **Unit Test Suite** - 112 tests covering utilities, database, core components, and processors
+60. **Unit Test Suite** - 127 tests covering utilities, database, core components, and processors
 61. **Test Fixtures** - Reusable test fixtures for temp dirs, databases, sample files
 62. **Processor Tests** - Comprehensive tests for image, video, audio, document processors
 63. **Integration Tests** - Initial integration tests for complete workflows
