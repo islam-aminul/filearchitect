@@ -911,6 +911,13 @@ Implemented:
   - Error handling tests (3 tests - nonexistent sessions, invalid IDs, transactions)
   - Maintenance tests (3 tests - incomplete session queries, size, vacuum)
 - [x] Tests for core components (test_core.py) - 11 tests ✅
+- [x] Tests for space management (test_space.py) - 24 tests ✅
+  - SpaceInfo dataclass tests (5 tests - properties, repr)
+  - SpaceManager initialization (2 tests - defaults, custom)
+  - Space checking (8 tests - sufficient, insufficient, exports, buffer)
+  - Pre-flight validation (2 tests - success, failure)
+  - Low space detection (4 tests - warnings, messages)
+  - Space estimation (3 tests - basic, exports, breakdown)
 - [x] Tests for file processors (test_processors.py) - 30 tests ✅
   - Image processor tests (9 tests)
   - Video processor tests (4 tests)
@@ -946,9 +953,10 @@ Implemented:
 - `tests/unit/test_database.py` - 597 lines ✅ (expanded with 15 new tests)
 - `tests/unit/test_core.py` - 163 lines ✅
 - `tests/unit/test_processors.py` - 447 lines ✅ (30 new tests)
+- `tests/unit/test_space.py` - 364 lines ✅ (24 new tests)
 - `pytest.ini` - 19 lines ✅
 
-**Total:** 127 unit tests, all passing ✅
+**Total:** 151 unit tests, all passing ✅
 
 #### 17.2 Bugs Fixed During Testing ✅
 - Fixed FileScanner symlink handling (Path.is_dir doesn't accept follow_symlinks parameter)
@@ -971,7 +979,7 @@ No pytest-qt tests implemented yet
 No E2E test scenarios implemented yet
 
 ### Test Coverage
-- **Current coverage: 30%** (measured with pytest-cov) - up from 22% → 27% → 29% → 30%
+- **Current coverage: 31%** (measured with pytest-cov) - up from 22% → 27% → 29% → 30% → 31%
 - **Utility coverage (major improvements):**
   - hash.py: 15% → **85%** (+70%)
   - path.py: 11% → **73%** (+62%)
@@ -982,6 +990,7 @@ No E2E test scenarios implemented yet
   - detector.py: 15% → **46%** (+31%)
   - sidecar.py: 8% → **49%** (+41%)
   - deduplication.py: 17% → **35%** (+18%)
+  - **space.py: 31% → 92% (+61% - excellent!)**
 - **Database layer coverage (major improvement):**
   - database/manager.py: 41% → **76%** (+35%)
   - database/schema.py: 29% → **45%** (+16%)
@@ -1160,11 +1169,11 @@ No implementation for:
 57. **GUI Settings Profiles** - Save and load configuration profiles
 58. **Configuration Profiles** - Profile manager for saving/loading named configurations
 59. **Configuration Management** - Save/load settings from destination directory
-60. **Unit Test Suite** - 127 tests covering utilities, database, core components, and processors
+60. **Unit Test Suite** - 151 tests covering utilities, database, core components, space management, and processors
 61. **Test Fixtures** - Reusable test fixtures for temp dirs, databases, sample files
 62. **Processor Tests** - Comprehensive tests for image, video, audio, document processors
 63. **Integration Tests** - Initial integration tests for complete workflows
-64. **Test Coverage** - pytest-cov integration with 30% coverage (target 80%, up from 22% → 27% → 29% → 30%)
+64. **Test Coverage** - pytest-cov integration with 31% coverage (target 80%, up from 22% → 27% → 29% → 30% → 31%)
 65. **Bug Fixes** - Scanner symlink handling and deduplication hash calculation fixed
 
 ### Not Yet Functional (Core Features) ❌
